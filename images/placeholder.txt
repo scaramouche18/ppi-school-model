@@ -1,0 +1,20 @@
+This folder contains placeholder images for the PP International School website.
+
+Required Images:
+- logo.png (School logo)
+- hero-bg.jpg (Hero section background - school campus)
+- principal.jpg (Principal's photo - professional headshot)
+- classroom.jpg (Modern classroom with students)
+- library.jpg (Library with books and reading areas)
+- sports.jpg (Sports facilities and activities)
+- lab.jpg (Science laboratory with equipment)
+- auditorium.jpg (School auditorium/assembly hall)
+- transport.jpg (School buses and transportation)
+
+All images should be:
+- High quality (at least 1200px wide for hero, 800px for others)
+- Professional and appropriate for a school website
+- Consistent in style and lighting
+- Optimized for web (JPEG format, under 500KB each)
+
+These placeholder files can be replaced with actual school photos.

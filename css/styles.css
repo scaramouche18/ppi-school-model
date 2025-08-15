@@ -276,6 +276,14 @@ h1, h2, h3, h4, h5, h6 {
     gap: 4px;
     padding: 8px;
     z-index: 1001;
+    border: none;
+    background: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.mobile-menu-toggle:hover {
+    background-color: rgba(30, 64, 175, 0.1);
 }
 
 .mobile-menu-toggle span {
@@ -300,12 +308,18 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Mobile Navigation Styles */
 @media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+    
     .nav-content {
         padding: 1rem 0;
+        position: relative;
     }
     
     .logo {
         gap: 0.5rem;
+        flex: 1;
     }
     
     .logo-img {
@@ -323,6 +337,8 @@ h1, h2, h3, h4, h5, h6 {
     
     .mobile-menu-toggle {
         display: flex;
+        position: relative;
+        z-index: 1002;
     }
     
     .nav-menu {
@@ -340,6 +356,7 @@ h1, h2, h3, h4, h5, h6 {
         z-index: 1000;
         overflow-y: auto;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        gap: 0;
     }
     
     .nav-menu.active {
@@ -353,11 +370,26 @@ h1, h2, h3, h4, h5, h6 {
         border-bottom: 1px solid #e5e7eb;
     }
     
+    .nav-menu .nav-item:last-child {
+        border-bottom: none;
+    }
+    
     .nav-menu .nav-link {
         display: block;
         padding: 1rem 0;
         font-size: 1.1rem;
         width: 100%;
+        color: #333;
+        font-weight: 500;
+    }
+    
+    .nav-menu .nav-link:hover {
+        color: #1e40af;
+        background-color: rgba(30, 64, 175, 0.05);
+        padding-left: 1rem;
+        border-radius: 8px;
+        margin: 0 -1rem;
+        padding-right: 1rem;
     }
     
     .nav-menu .nav-link::after {
@@ -377,6 +409,7 @@ h1, h2, h3, h4, h5, h6 {
     
     .dropdown-toggle i {
         transition: transform 0.3s ease;
+        font-size: 0.9rem;
     }
     
     .dropdown.active .dropdown-toggle i {
@@ -396,6 +429,8 @@ h1, h2, h3, h4, h5, h6 {
         min-width: 100%;
         margin-top: 0;
         padding: 0;
+        border-radius: 8px;
+        margin: 0.5rem 0;
     }
     
     .dropdown.active .dropdown-menu {
@@ -407,6 +442,14 @@ h1, h2, h3, h4, h5, h6 {
         padding: 0.75rem 1rem;
         font-size: 1rem;
         border-bottom: 1px solid #e5e7eb;
+        color: #64748b;
+        transition: all 0.3s ease;
+    }
+    
+    .dropdown-menu a:hover {
+        color: #1e40af;
+        background-color: rgba(30, 64, 175, 0.1);
+        padding-left: 1.5rem;
     }
     
     .dropdown-menu a:last-child {
@@ -427,9 +470,23 @@ h1, h2, h3, h4, h5, h6 {
         transition: all 0.3s ease;
     }
     
+    .nav-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    /* Prevent body scroll when menu is open */
+    body.no-scroll {
+        overflow: hidden;
+    }
+    
 }
 
 @media (max-width: 480px) {
+    .container {
+        padding: 0 10px;
+    }
+    
     .logo-text h1 {
         font-size: 1rem;
     }
@@ -446,8 +503,42 @@ h1, h2, h3, h4, h5, h6 {
         font-size: 1rem;
         padding: 0.8rem 0;
     }
+    
+    .mobile-menu-toggle {
+        padding: 6px;
+    }
+    
+    .mobile-menu-toggle span {
+        width: 22px;
+        height: 2px;
+    }
 }
 
+/* Tablet specific styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .nav-menu {
+        gap: 1.5rem;
+    }
+    
+    .nav-link {
+        font-size: 0.95rem;
+    }
+    
+    .dropdown-menu {
+        min-width: 180px;
+    }
+}
+
+/* Large screen optimization */
+@media (min-width: 1200px) {
+    .nav-menu {
+        gap: 2.5rem;
+    }
+    
+    .nav-link {
+        font-size: 1.05rem;
+    }
+}
 /* Hero Section */
 .hero-carousel {
   position: relative;

@@ -14,11 +14,7 @@ function initNavigation() {
     const navbar = document.getElementById('navbar');
     const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
     const navMenu = document.getElementById('nav-menu');
-    
-    // Create overlay element
-    const navOverlay = document.createElement('div');
-    navOverlay.className = 'nav-overlay';
-    document.body.appendChild(navOverlay);
+    const dropdowns = document.querySelectorAll('.dropdown');
     
     // Scroll effect for navbar
     window.addEventListener('scroll', function() {
@@ -31,135 +27,23 @@ function initNavigation() {
     
     // Mobile menu toggle
     mobileMenuToggle.addEventListener('click', function() {
-        this.classList.toggle('active');
-        navMenu.classList.toggle('active');
-        navOverlay.classList.toggle('active');
-        document.body.classList.toggle('no-scroll');
-        
-        // Update aria attributes for accessibility
-        const isExpanded = this.classList.contains('active');
-        this.setAttribute('aria-expanded', isExpanded);
-        navMenu.setAttribute('aria-hidden', !isExpanded);
-        
-        // Add smooth animation class
-        if (isExpanded) {
-            navMenu.style.transform = 'translateX(0)';
-        } else {
-            navMenu.style.transform = 'translateX(-100%)';
-        }
+        this.classList.toggle('open');
+        navMenu.classList.toggle('open');
     });
     
-    // Close mobile menu when clicking on links
-    const navLinks = document.querySelectorAll('.nav-link');
-    const currentPath = (window.location.pathname.split('/').pop() || 'index.html').toLowerCase();
-    navLinks.forEach(link => {
-        const href = (link.getAttribute('href') || '').toLowerCase();
-        // Mark active link for current page
-        if (href === currentPath || (currentPath === '' && href.endsWith('index.html'))) {
-            link.classList.add('active');
-            link.setAttribute('aria-current', 'page');
-        }
-        // Close mobile menu on click
-        link.addEventListener('click', function() {
-            // Add a small delay for better UX
-            setTimeout(() => {
-                closeMobileMenu();
-            }, 150);
-        });
-    });
-    
-    // Close menu when clicking overlay
-    navOverlay.addEventListener('click', function() {
-        closeMobileMenu();
-    });
-    
-    // Close menu with Escape key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && navMenu.classList.contains('active')) {
-            closeMobileMenu();
-        }
-    });
-    
-    // Handle swipe gestures for mobile menu
-    let startX = 0;
-    let currentX = 0;
-    let isDragging = false;
-    
-    navMenu.addEventListener('touchstart', function(e) {
-        startX = e.touches[0].clientX;
-        isDragging = true;
-    });
-    
-    navMenu.addEventListener('touchmove', function(e) {
-        if (!isDragging) return;
-        currentX = e.touches[0].clientX;
-        const diffX = currentX - startX;
-        
-        // Only allow swiping left to close
-        if (diffX < 0) {
-            const translateX = Math.max(diffX, -320);
-            navMenu.style.transform = `translateX(${translateX}px)`;
-        }
-    });
-    
-    navMenu.addEventListener('touchend', function(e) {
-        if (!isDragging) return;
-        isDragging = false;
-        
-        const diffX = currentX - startX;
-        
-        // Close menu if swiped more than 100px to the left
-        if (diffX < -100) {
-            closeMobileMenu();
-        } else {
-            // Snap back to open position
-            navMenu.style.transform = 'translateX(0)';
-        }
-    });
-    
-    // Function to close mobile menu
-    function closeMobileMenu() {
-        // Add closing animation
-        navMenu.style.transform = 'translateX(-100%)';
-        
-        mobileMenuToggle.classList.remove('active');
-        navMenu.classList.remove('active');
-        navOverlay.classList.remove('active');
-        document.body.classList.remove('no-scroll');
-        
-        // Reset aria attributes
-        mobileMenuToggle.setAttribute('aria-expanded', 'false');
-        navMenu.setAttribute('aria-hidden', 'true');
-        
-        // Close all dropdowns
-        document.querySelectorAll('.dropdown.active').forEach(dropdown => {
-            dropdown.classList.remove('active');
-        });
-        
-        // Reset transform after animation
-        setTimeout(() => {
-            if (!navMenu.classList.contains('active')) {
-                navMenu.style.transform = '';
-            }
-        }, 400);
-    }
-    
-    // Handle dropdowns in mobile menu
-    const dropdowns = document.querySelectorAll('.dropdown');
+    // Handle dropdown clicks in mobile
     dropdowns.forEach(dropdown => {
         const toggle = dropdown.querySelector('.dropdown-toggle');
-        const menu = dropdown.querySelector('.dropdown-menu');
-        
-        if (toggle && menu) {
+        if (toggle) {
             toggle.addEventListener('click', function(e) {
                 if (window.innerWidth <= 768) {
                     e.preventDefault();
-                    dropdown.classList.toggle('active');
+                    dropdown.classList.toggle('open');
                     
                     // Close other dropdowns
                     dropdowns.forEach(otherDropdown => {
                         if (otherDropdown !== dropdown) {
-                            otherDropdown.classList.remove('active');
+                            otherDropdown.classList.remove('open');
                         }
                     });
                 }
@@ -167,25 +51,13 @@ function initNavigation() {
         }
     });
     
-    // Smooth scrolling for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                const headerOffset = 80;
-                const elementPosition = target.getBoundingClientRect().top;
-                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-                
-                window.scrollTo({
-                    top: offsetPosition,
-                    behavior: 'smooth'
-                });
-                
-                // Close mobile menu if open
-                if (navMenu.classList.contains('active')) {
-                    closeMobileMenu();
-                }
+    // Close mobile menu when clicking on nav links
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            if (window.innerWidth <= 768) {
+                mobileMenuToggle.classList.remove('open');
+                navMenu.classList.remove('open');
             }
         });
     });
@@ -193,15 +65,13 @@ function initNavigation() {
     // Handle window resize
     window.addEventListener('resize', function() {
         if (window.innerWidth > 768) {
-            closeMobileMenu();
+            mobileMenuToggle.classList.remove('open');
+            navMenu.classList.remove('open');
+            dropdowns.forEach(dropdown => {
+                dropdown.classList.remove('open');
+            });
         }
     });
-    
-    // Initialize accessibility attributes
-    mobileMenuToggle.setAttribute('aria-expanded', 'false');
-    mobileMenuToggle.setAttribute('aria-controls', 'nav-menu');
-    mobileMenuToggle.setAttribute('aria-label', 'Toggle navigation menu');
-    navMenu.setAttribute('aria-hidden', 'true');
 }
 let slides = document.querySelectorAll(".carousel-slide");
 let index = 0;

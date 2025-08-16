@@ -40,6 +40,13 @@ function initNavigation() {
         const isExpanded = this.classList.contains('active');
         this.setAttribute('aria-expanded', isExpanded);
         navMenu.setAttribute('aria-hidden', !isExpanded);
+        
+        // Add smooth animation class
+        if (isExpanded) {
+            navMenu.style.transform = 'translateX(0)';
+        } else {
+            navMenu.style.transform = 'translateX(-100%)';
+        }
     });
     
     // Close mobile menu when clicking on links
@@ -54,7 +61,10 @@ function initNavigation() {
         }
         // Close mobile menu on click
         link.addEventListener('click', function() {
-            closeMobileMenu();
+            // Add a small delay for better UX
+            setTimeout(() => {
+                closeMobileMenu();
+            }, 150);
         });
     });
     
@@ -70,8 +80,48 @@ function initNavigation() {
         }
     });
     
+    // Handle swipe gestures for mobile menu
+    let startX = 0;
+    let currentX = 0;
+    let isDragging = false;
+    
+    navMenu.addEventListener('touchstart', function(e) {
+        startX = e.touches[0].clientX;
+        isDragging = true;
+    });
+    
+    navMenu.addEventListener('touchmove', function(e) {
+        if (!isDragging) return;
+        currentX = e.touches[0].clientX;
+        const diffX = currentX - startX;
+        
+        // Only allow swiping left to close
+        if (diffX < 0) {
+            const translateX = Math.max(diffX, -320);
+            navMenu.style.transform = `translateX(${translateX}px)`;
+        }
+    });
+    
+    navMenu.addEventListener('touchend', function(e) {
+        if (!isDragging) return;
+        isDragging = false;
+        
+        const diffX = currentX - startX;
+        
+        // Close menu if swiped more than 100px to the left
+        if (diffX < -100) {
+            closeMobileMenu();
+        } else {
+            // Snap back to open position
+            navMenu.style.transform = 'translateX(0)';
+        }
+    });
+    
     // Function to close mobile menu
     function closeMobileMenu() {
+        // Add closing animation
+        navMenu.style.transform = 'translateX(-100%)';
+        
         mobileMenuToggle.classList.remove('active');
         navMenu.classList.remove('active');
         navOverlay.classList.remove('active');
@@ -85,6 +135,13 @@ function initNavigation() {
         document.querySelectorAll('.dropdown.active').forEach(dropdown => {
             dropdown.classList.remove('active');
         });
+        
+        // Reset transform after animation
+        setTimeout(() => {
+            if (!navMenu.classList.contains('active')) {
+                navMenu.style.transform = '';
+            }
+        }, 400);
     }
     
     // Handle dropdowns in mobile menu
